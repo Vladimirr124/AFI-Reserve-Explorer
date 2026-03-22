@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AFI Reserve Explorer
 
-## Getting Started
+Интерфейс для **спокойного чтения** публичных материалов про структуру хранилищ AFI, логику резервов и типичные риски. Это **не** инвестиционный, юридический или security-совет и **не** подключение к живым данным с сети.
 
-First, run the development server:
+**Живая версия:** [afi-reserve-explorer.vercel.app](https://afi-reserve-explorer.vercel.app/)
+
+---
+
+## Что внутри сайта
+
+1. **Обзор протокола** — цепочка от реальных активов до receipt-токена (RWA → кастодиан → rwaUSDi → vault → токен доли), в духе описания ERC-4626 в публичных текстах.
+2. **Два vault’а** — переключение между **afiUSD** и **afi-rwaUSDi**: текст и блоки рисков подстраиваются под выбранный контекст.
+3. **Сравнение** — карточки с «что проверить в коде и раскрытиях», без заявлений о доходности.
+4. **Визуализация резервной логики** — режимы «без AFI PoR», «off-chain отчёты», «on-chain lock на rwaUSDi», «инварианты» — анимации по **рамке документации**, не верификация в реальном времени.
+5. **Риски** — сетка protocol / market / counterparty плюс внутренние критерии и блок про аудиты (как ссылки на публичные источники).
+
+Цифры TVL и supply на сайте **статичны** и **не** стримятся с блокчейна — это намеренно, чтобы страница оставалась честной как «карта для чтения», а не дашборд.
+
+---
+
+## Локальный запуск
+
+Требуется Node.js 18+.
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Открой [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Сборка и прод:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Где править тексты и структуру контента
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Весь смысловой контент собран в одном месте:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **`data/afi.ts`** — копирайт, списки рисков, подсказки для сравнения vault’ов, глоссарий, ссылки на аудиты и т.д.
+- **`types/afi.ts`** — типы для этих данных.
 
-## Deploy on Vercel
+После правок перезапуск dev-сервера не обязателен: страница подхватит изменения при hot reload. Для продакшена — обычный деплой (например, push в репозиторий, связанный с Vercel).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Технологии (кратко)
+
+Next.js 14 (App Router), TypeScript, Tailwind CSS, shadcn/ui, Framer Motion для анимаций в блоке «How it works». Подробнее и зачем такой стек — в [`memory-bank/tech.md`](memory-bank/tech.md).
+
+---
+
+## Деплой
+
+Проект задеплоен на **Vercel** (см. ссылку выше). Любой хостинг с поддержкой Next.js подойдёт: после `npm run build` используйте вывод `next build` по инструкции вашей платформы.
+
+---
+
+## Лицензия и оговорка
+
+Интерфейс — **образовательная вёрстка** по публичным формулировкам. Перед любыми решениями сверяйтесь с официальной документацией AFI, развёрнутыми контрактами на нужной сети и актуальными раскрытиями.
