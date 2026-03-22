@@ -1,35 +1,35 @@
 # AFI Reserve Explorer
 
-Интерфейс для **спокойного чтения** публичных материалов про структуру хранилищ AFI, логику резервов и типичные риски. Это **не** инвестиционный, юридический или security-совет и **не** подключение к живым данным с сети.
+A reading-first interface for public materials on AFI vault structure, reserve logic, and common risks. It is **not** investment, legal, or security advice, and it does **not** stream live on-chain data.
 
-**Живая версия:** [afi-reserve-explorer.vercel.app](https://afi-reserve-explorer.vercel.app/)
-
----
-
-## Что внутри сайта
-
-1. **Обзор протокола** — цепочка от реальных активов до receipt-токена (RWA → кастодиан → rwaUSDi → vault → токен доли), в духе описания ERC-4626 в публичных текстах.
-2. **Два vault’а** — переключение между **afiUSD** и **afi-rwaUSDi**: текст и блоки рисков подстраиваются под выбранный контекст.
-3. **Сравнение** — карточки с «что проверить в коде и раскрытиях», без заявлений о доходности.
-4. **Визуализация резервной логики** — режимы «без AFI PoR», «off-chain отчёты», «on-chain lock на rwaUSDi», «инварианты» — анимации по **рамке документации**, не верификация в реальном времени.
-5. **Риски** — сетка protocol / market / counterparty плюс внутренние критерии и блок про аудиты (как ссылки на публичные источники).
-
-Цифры TVL и supply на сайте **статичны** и **не** стримятся с блокчейна — это намеренно, чтобы страница оставалась честной как «карта для чтения», а не дашборд.
+**Live site:** [afi-reserve-explorer.vercel.app](https://afi-reserve-explorer.vercel.app/)
 
 ---
 
-## Локальный запуск
+## What’s on the site
 
-Требуется Node.js 18+.
+1. **Protocol overview** — the path from real-world assets to a receipt token (RWA → custodian → rwaUSDi → vault → share token), framed like ERC-4626-style descriptions in public docs.
+2. **Two vaults** — switch between **afiUSD** and **afi-rwaUSDi**; copy and risk sections follow the selected vault.
+3. **Comparison** — side-by-side cards focused on what to verify in code and disclosures, without performance claims.
+4. **Reserve logic visualizer** — modes for “without AFI PoR,” off-chain reporting, on-chain rwaUSDi lock, and invariants: animations illustrate **how documentation frames** these ideas, not live verification.
+5. **Risks** — protocol / market / counterparty grid, internal criteria, and audit references as pointers to public sources.
+
+TVL and supply figures on the page are **static** and **not** streamed from the chain by design, so the site stays a honest “reading map” rather than a live dashboard.
+
+---
+
+## Local development
+
+Requires Node.js 18+.
 
 ```bash
 npm install
 npm run dev
 ```
 
-Открой [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000).
 
-Сборка и прод:
+Production build:
 
 ```bash
 npm run build
@@ -38,29 +38,29 @@ npm start
 
 ---
 
-## Где править тексты и структуру контента
+## Editing copy and content structure
 
-Весь смысловой контент собран в одном месте:
+All narrative content lives in:
 
-- **`data/afi.ts`** — копирайт, списки рисков, подсказки для сравнения vault’ов, глоссарий, ссылки на аудиты и т.д.
-- **`types/afi.ts`** — типы для этих данных.
+- **`data/afi.ts`** — copy, risk lists, vault comparison notes, glossary, audit links, and related constants.
+- **`types/afi.ts`** — TypeScript types for that data.
 
-После правок перезапуск dev-сервера не обязателен: страница подхватит изменения при hot reload. Для продакшена — обычный деплой (например, push в репозиторий, связанный с Vercel).
-
----
-
-## Технологии (кратко)
-
-Next.js 14 (App Router), TypeScript, Tailwind CSS, shadcn/ui, Framer Motion для анимаций в блоке «How it works». Подробнее и зачем такой стек — в [`memory-bank/tech.md`](memory-bank/tech.md).
+After edits, a dev server restart is usually unnecessary; hot reload picks up changes. For production, deploy as you normally would (e.g. push to a Vercel-connected repo).
 
 ---
 
-## Деплой
+## Tech stack (short)
 
-Проект задеплоен на **Vercel** (см. ссылку выше). Любой хостинг с поддержкой Next.js подойдёт: после `npm run build` используйте вывод `next build` по инструкции вашей платформы.
+Next.js 14 (App Router), TypeScript, Tailwind CSS, shadcn/ui, Framer Motion for the “How it works” animations. Rationale and details: [`memory-bank/tech.md`](memory-bank/tech.md).
 
 ---
 
-## Лицензия и оговорка
+## Deployment
 
-Интерфейс — **образовательная вёрстка** по публичным формулировкам. Перед любыми решениями сверяйтесь с официальной документацией AFI, развёрнутыми контрактами на нужной сети и актуальными раскрытиями.
+The app is deployed on **Vercel** (see link above). Any host that supports Next.js works: follow your platform’s guide after `npm run build`.
+
+---
+
+## Disclaimer
+
+This interface is an **educational layout** based on public wording. For any decisions, rely on official AFI documentation, contracts on the networks you care about, and up-to-date disclosures.
