@@ -38,8 +38,9 @@ export function RiskGrid() {
             Protocol, market, and counterparty surfaces
           </h2>
           <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">
-            The grid below adapts to your selected vault. It summarizes common
-            risk classes discussed in public DeFi research—not a formal rating.
+            The grid below tracks the selected vault. It summarizes risk classes
+            commonly discussed in public DeFi research and documentation—not a
+            formal rating.
           </p>
         </div>
 
@@ -97,8 +98,13 @@ export function RiskGrid() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="rounded-lg border border-dashed border-border bg-background/80 px-4 py-3 text-sm text-muted-foreground">
-                {RISK_SCORE_DISCLAIMER}
+              <div className="rounded-lg border border-amber-700/25 bg-amber-50/50 px-4 py-3 dark:border-amber-500/30 dark:bg-amber-500/10">
+                <p className="text-xs font-semibold uppercase tracking-wide text-amber-950/90 dark:text-amber-100">
+                  Independent interpretation
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-amber-950/85 dark:text-amber-50/90">
+                  {RISK_SCORE_DISCLAIMER}
+                </p>
               </div>
               <div>
                 <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">

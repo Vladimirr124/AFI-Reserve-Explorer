@@ -17,7 +17,7 @@ export function ProtocolOverview() {
             Protocol overview
           </p>
           <h2 className="font-heading text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-            From real-world collateral to receipt tokens
+            Collateral rail to receipt tokens
           </h2>
         </div>
 

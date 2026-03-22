@@ -84,10 +84,10 @@ export function FlowVisualizer() {
             How attestation, locking, and invariants relate
           </h2>
           <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">
-            Toggle the three reading modes. Animations illustrate how public
-            documentation frames off-chain evidence, on-chain rwaUSDi locks, and
-            the inequalities analysts watch—without implying live verification
-            from this static page.
+            Three reading modes compare how documentation positions off-chain
+            evidence, on-chain rwaUSDi locks, and supply–reserve inequalities.
+            Animations are illustrative; this static page does not perform live
+            verification.
           </p>
         </div>
 

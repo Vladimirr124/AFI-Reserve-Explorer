@@ -79,6 +79,13 @@ export interface ProtocolOverviewCopy {
   vaultNote: string;
 }
 
+export interface CoreProtocolInvariantCard {
+  id: string;
+  title: string;
+  expression: string;
+  note?: string;
+}
+
 export interface HeroCopy {
   title: string;
   subtitle: string;

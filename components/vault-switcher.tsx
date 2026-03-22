@@ -24,7 +24,8 @@ export function VaultSwitcher({ className }: { className?: string }) {
             Active vault context
           </p>
           <p className="text-sm text-foreground">
-            Filtering overview, comparison, flow, and risk copy.
+            Filtering protocol overview, core invariants, comparison, flow, and
+            risk copy.
           </p>
         </div>
         <Tabs

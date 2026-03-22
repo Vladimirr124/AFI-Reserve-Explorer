@@ -1,6 +1,7 @@
 import type {
   AuditRef,
   ComparisonHighlight,
+  CoreProtocolInvariantCard,
   GlossaryEntry,
   HeroCopy,
   InternalCriterion,
@@ -11,6 +12,9 @@ import type {
   VaultMeta,
   VaultType,
 } from "@/types/afi";
+
+/** Primary public documentation (GitBook). */
+export const AFI_SOURCE_DOCS_URL = "https://docs.afiprotocol.ai/";
 
 export const VAULTS: VaultMeta[] = [
   {
@@ -30,7 +34,7 @@ export const VAULTS: VaultMeta[] = [
 export const HERO: HeroCopy = {
   title: "AFI Reserve Explorer",
   subtitle:
-    "Understand vault structure, reserve logic, and protocol risks based on public documentation.",
+    "Map vault structure, reserve accounting, and documented risk surfaces using public materials as the sole input.",
   ctas: [
     { label: "Vaults", targetId: "vaults" },
     { label: "Risks", targetId: "risks" },
@@ -49,31 +53,89 @@ export const PROTOCOL_DIAGRAM_LABELS = [
 const overviewBase: ProtocolOverviewCopy = {
   institutionalTitle: "Institutional vault narrative (ERC-4626)",
   institutionalBody:
-    "Public materials describe an institutional framing: off-chain backed assets are custodied, represented on-chain (for example as rwaUSDi), and deposited into an AFI vault that issues an ERC-4626-style receipt token. This page maps that structure at a high level only; it is not investment advice.",
+    "Public materials describe an institutional framing: off-chain backed assets are custodied, represented on-chain (for example as rwaUSDi), and allocated to an AFI vault that issues an ERC-4626-style receipt token. This page maps that structure at a high level only; it is not investment advice.",
   vaultNote:
-    "Narrative emphasis shifts by vault: afiUSD highlights exchange-rate mechanics and cross-chain distribution, while afi-rwaUSDi stresses 1:1 reserve alignment and institutional guardrails.",
+    "Documentation emphasis differs by vault: afiUSD foregrounds exchange-rate mechanics and cross-chain distribution, whereas afi-rwaUSDi foregrounds reserve alignment and institutional guardrails.",
 };
 
 export const PROTOCOL_OVERVIEW_BY_VAULT: Record<VaultType, ProtocolOverviewCopy> = {
   "afiUSD": {
     ...overviewBase,
     vaultNote:
-      "For afiUSD, documentation commonly references a global exchange rate, yield vesting semantics, and cross-chain availability. Treat these as design claims to verify against deployed contracts and latest disclosures.",
+      "For afiUSD, documentation commonly references a global exchange rate, yield vesting semantics, and cross-chain availability. These should be treated as design claims and reconciled with deployed contracts and the latest disclosures.",
   },
   "afi-rwaUSDi": {
     ...overviewBase,
     vaultNote:
-      "For afi-rwaUSDi, materials emphasize 1:1 backing against reserves and an explicit invariant posture: circulating receipt supply should not exceed verified reserves. Always reconcile wording with on-chain supply and published attestations.",
+      "For afi-rwaUSDi, materials emphasize reserve alignment and an explicit inequality: circulating receipt supply is not to exceed verified reserves. Wording should be reconciled with on-chain supply and published attestations.",
   },
+};
+
+export const CORE_PROTOCOL_INVARIANTS_BY_VAULT: Record<
+  VaultType,
+  CoreProtocolInvariantCard[]
+> = {
+  "afi-rwaUSDi": [
+    {
+      id: "supply-cap",
+      title: "Supply Cap",
+      expression: "afi-rwaUSDi supply ≤ rwaUSDi locked in vault",
+      note: "Maps receipt-token liability to the on-chain rwaUSDi position described as locked collateral.",
+    },
+    {
+      id: "reserve-parity",
+      title: "Reserve Parity",
+      expression: "Circulating supply ≤ Verified reserves",
+      note: "Parity is stated relative to attested reserve figures, not implied market prices.",
+    },
+    {
+      id: "no-recursion",
+      title: "No Recursion",
+      expression: "Strictly no recursive minting or looping",
+      note: "The documented model disallows mint paths that re-hypothecate receipt tokens into further mint pressure.",
+    },
+    {
+      id: "asset-integrity",
+      title: "Asset Integrity",
+      expression: "No silent reserve redeployment or movement",
+      note: "Reserve reallocations are expected to remain observable through custody and disclosure channels.",
+    },
+  ],
+  "afiUSD": [
+    {
+      id: "supply-cap",
+      title: "Supply Cap",
+      expression: "afiUSD receipt supply ≤ rwaUSDi locked in vault",
+      note: "Under the documented rail, rwaUSDi locked in the vault is the quantity tied to expanded receipt issuance.",
+    },
+    {
+      id: "reserve-parity",
+      title: "Reserve Parity",
+      expression: "Outstanding claims ≤ Verified reserves",
+      note: "ERC-4626 share price, fees, and vesting can modulate claim values; parity is assessed against published reserve methodology.",
+    },
+    {
+      id: "no-recursion",
+      title: "No Recursion",
+      expression: "Strictly no recursive minting or looping",
+      note: "Same structural expectation as rwaUSDi vault reading: no documented loop where receipts recursively back new mint.",
+    },
+    {
+      id: "asset-integrity",
+      title: "Asset Integrity",
+      expression: "No silent reserve redeployment or movement",
+      note: "Operational and attestation layers are the reference for whether reserve composition changes are disclosed.",
+    },
+  ],
 };
 
 export const COMPARISON: Record<VaultType, ComparisonHighlight> = {
   "afiUSD": {
     title: "afiUSD",
     bullets: [
-      "Yield vesting: accrual and distribution mechanics tied to vault design (verify schedule parameters in docs and contracts).",
-      "Global exchange rate: user-facing conversion can differ from simple 1:1 mental models—trace share price / exchange-rate oracles.",
-      "Cross-chain: bridging and liquidity venues introduce operational and bridge-risk surfaces beyond the core vault.",
+      "Yield vesting: accrual and distribution follow vault parameters; schedule and eligibility should be verified in documentation and contracts.",
+      "Global exchange rate: conversion semantics can depart from a simple 1:1 mental model—share price and oracle dependencies warrant explicit tracing.",
+      "Cross-chain: bridging and secondary venues introduce operational and bridge-risk surfaces beyond the core vault.",
     ],
     footnote:
       "Use this card as a reading guide: confirm each bullet against the specific network deployment you care about.",
@@ -81,9 +143,9 @@ export const COMPARISON: Record<VaultType, ComparisonHighlight> = {
   "afi-rwaUSDi": {
     title: "afi-rwaUSDi",
     bullets: [
-      "1:1 backing narrative: marketing language often implies tight pegging to reserve units—validate with attestation cadence and token decimals.",
+      "Reserve peg framing: public copy often stresses tight alignment to reserve units—attestation cadence, decimals, and scope should be validated empirically.",
       "Institutional focus: custody, onboarding, and eligibility constraints may apply; not all flows are permissionless in practice.",
-      "Invariant (documented intent): circulating supply ≤ verified reserves—treat as a design goal enforced by operational + on-chain controls.",
+      "Documented inequality: circulating supply ≤ verified reserves—treated here as a design objective contingent on operational and on-chain controls.",
     ],
     footnote:
       "Supply and reserve figures move; this explorer does not stream live chain data.",
@@ -113,12 +175,12 @@ export const POR_FLOW_BY_VAULT: Record<
         { from: "vault", to: "rcpt" },
       ],
       callout:
-        "Users must manually reconcile PDFs, emails, or dashboards with chain state—latency and interpretation risk remain.",
+        "Reconciliation typically requires manual alignment of PDFs, emails, or dashboards with chain state—latency and interpretation risk remain.",
     },
     "with-por": {
       title: "With AFI PoR",
       summary:
-        "Proof-of-reserve style workflows aim to bind published reserve figures to on-chain inventory—here, rwaUSDi is portrayed as the asset leg that must be locked before vault operations expand liability to users.",
+        "Proof-of-reserve style workflows are described as binding published reserve figures to on-chain inventory; rwaUSDi is portrayed as the asset leg expected to be locked before the vault expands liability.",
       nodes: [
         { id: "rwa", label: "RWA stack", sublabel: "Custodied" },
         { id: "cust", label: "Attestation", sublabel: "Verifier / oracle" },
@@ -133,12 +195,12 @@ export const POR_FLOW_BY_VAULT: Record<
         { from: "vault", to: "rcpt", label: "Issue" },
       ],
       callout:
-        "On-chain enforcement is only as strong as oracle parameters, upgrade paths, and governance—read the actual contracts.",
+        "On-chain enforcement strength is bounded by oracle parameters, upgrade paths, and governance; primary evidence remains the deployed contracts.",
     },
     "invariants": {
       title: "Core invariants (reading model)",
       summary:
-        "These are logic gates useful when reading afiUSD documentation—not guaranteed properties unless the deployment proves them.",
+        "Logic gates useful when reading afiUSD documentation; they are interpretive unless substantiated by deployment-specific evidence.",
       nodes: [],
       edges: [],
       invariants: [
@@ -146,7 +208,7 @@ export const POR_FLOW_BY_VAULT: Record<
           id: "inv1",
           expression: "Vault assets ≥ Redeemable claims",
           description:
-            "In a well-behaved ERC-4626 design, assets under management should cover outstanding shares at the stated exchange rate, modulo fees and timing.",
+            "In a standard ERC-4626 reading, assets under management are expected to cover outstanding shares at the stated exchange rate, modulo fees and timing.",
         },
         {
           id: "inv2",
@@ -182,7 +244,7 @@ export const POR_FLOW_BY_VAULT: Record<
         { from: "vault", to: "rcpt" },
       ],
       callout:
-        "A 1:1 narrative without verifiable locking is a marketing claim until backed by attestations you can audit.",
+        "A tight peg narrative without verifiable locking remains an unsubstantiated claim until supported by attestations that admit independent audit.",
     },
     "with-por": {
       title: "With AFI PoR",
@@ -202,12 +264,12 @@ export const POR_FLOW_BY_VAULT: Record<
         { from: "vault", to: "rcpt", label: "Mint cap" },
       ],
       callout:
-        "The critical question is who can change mint permissions and how quickly—governance and upgrade risk still apply.",
+        "Mint permission mutability and latency are central: governance and upgrade risk persist even when PoR is present.",
     },
     "invariants": {
       title: "Core invariants (reading model)",
       summary:
-        "afi-rwaUSDi materials often highlight a hard inequality between supply and reserves; treat the following as interpretive gates when reading docs.",
+        "afi-rwaUSDi materials often foreground a supply–reserve inequality; the following items are interpretive gates when reading documentation.",
       nodes: [],
       edges: [],
       invariants: [
@@ -215,7 +277,7 @@ export const POR_FLOW_BY_VAULT: Record<
           id: "inv1",
           expression: "Circulating afi-rwaUSDi ≤ Verified reserves",
           description:
-            "The headline invariant: new supply should not appear without a matching reserve line item and on-chain lock.",
+            "Headline inequality: new supply is not expected without a matching reserve line item and on-chain lock.",
         },
         {
           id: "inv2",
@@ -227,7 +289,7 @@ export const POR_FLOW_BY_VAULT: Record<
           id: "inv3",
           expression: "Attestation freshness ≥ Risk tolerance",
           description:
-            "Stale attestations mean users are trusting outdated snapshots—frequency and scope matter.",
+            "Stale attestations imply reliance on outdated snapshots; attestation frequency and scope are material to risk assessment.",
         },
       ],
     },
@@ -288,7 +350,7 @@ export const INTERNAL_CRITERIA: InternalCriterion[] = [
     id: "audits",
     title: "Audit coverage",
     detail:
-      "Independent reviews (for example Quantstamp and Cantina engagements referenced in public materials) reduce—but do not remove—implementation risk.",
+      "Independent reviews (for example Quantstamp and Cantina engagements cited in public materials) are associated with lower residual implementation risk but do not eliminate it.",
   },
   {
     id: "tvl",
@@ -308,17 +370,17 @@ export const TRUST_AUDITS: AuditRef[] = [
   {
     firm: "Quantstamp",
     scope: "Referenced in AFI public documentation",
-    status: "Addressed & Verified",
+    status: "Cited in public materials",
   },
   {
     firm: "Cantina",
     scope: "Referenced in AFI public documentation",
-    status: "Addressed & Verified",
+    status: "Cited in public materials",
   },
 ];
 
 export const RISK_SCORE_DISCLAIMER =
-  "Independent interface interpretation based on public docs.";
+  "Independent interpretation: this panel summarizes qualitative risk classes from public documentation. It is not a formal rating, audit finding, or live risk score.";
 
 export const GLOSSARY: GlossaryEntry[] = [
   {
@@ -339,7 +401,7 @@ export const GLOSSARY: GlossaryEntry[] = [
   {
     term: "rwaUSDi",
     definition:
-      "On-chain representation of real-world asset exposure within AFI’s documented stack; treat specifics as deployment-dependent.",
+      "On-chain representation of real-world asset exposure within the documented AFI stack; specifics are deployment-dependent.",
   },
   {
     term: "Receipt token",
@@ -350,9 +412,13 @@ export const GLOSSARY: GlossaryEntry[] = [
 
 export const SOURCES: SourceRef[] = [
   {
-    title: "AFI official documentation",
+    title: "AFI documentation (GitBook)",
+    url: AFI_SOURCE_DOCS_URL,
+    note: "Primary public documentation used as the reference layer for this explorer.",
+  },
+  {
+    title: "AFI project site",
     url: "https://afi.xyz",
-    note: "Replace with the exact doc URLs you rely on for research.",
   },
   {
     title: "ERC-4626 specification",
