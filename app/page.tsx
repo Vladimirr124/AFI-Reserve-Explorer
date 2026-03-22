@@ -3,6 +3,7 @@
 import { CoreProtocolInvariants } from "@/components/core-protocol-invariants";
 import { FlowVisualizer } from "@/components/flow-visualizer";
 import { Hero } from "@/components/hero";
+import { WhyThisMatters } from "@/components/why-this-matters";
 import { ProtocolOverview } from "@/components/protocol-overview";
 import { RiskGrid } from "@/components/risk-grid";
 import { SourceDrawer } from "@/components/source-drawer";
@@ -15,6 +16,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-background text-foreground">
       <Hero />
+      <WhyThisMatters />
       <VaultProvider>
         <VaultSwitcher />
         <ProtocolOverview />
@@ -25,7 +27,10 @@ export default function Home() {
         <SourceDrawer />
       </VaultProvider>
       <footer className="border-t border-border/80 py-10 text-center">
-        <p className="mx-auto max-w-2xl text-[0.7rem] leading-relaxed text-muted-foreground/90">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          Independent interpretation
+        </p>
+        <p className="mx-auto mt-2 max-w-2xl text-[0.7rem] leading-relaxed text-muted-foreground/90">
           This interface is an independent research interpretation based on
           public AFI documentation. It is not an official dashboard and does not
           constitute financial advice.
@@ -41,6 +46,13 @@ export default function Home() {
           </a>
         </p>
         <p className="mt-6 text-xs text-muted-foreground">
+          <a
+            href="#why-this-matters"
+            className="underline-offset-4 hover:underline"
+          >
+            Why this matters
+          </a>
+          {" · "}
           <a href="#protocol" className="underline-offset-4 hover:underline">
             Protocol overview
           </a>

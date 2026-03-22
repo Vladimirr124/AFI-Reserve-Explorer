@@ -15,7 +15,11 @@ export function Hero() {
           <h1 className="text-balance font-heading text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
             {HERO.title}
           </h1>
-          <p className="text-pretty text-lg leading-relaxed text-muted-foreground">
+          <p className="text-pretty text-lg font-medium leading-snug text-slate-600 dark:text-slate-400">
+            A simplified interface to understand AFI&apos;s Proof of Reserve
+            system, vault mechanics, and risks.
+          </p>
+          <p className="text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
             {HERO.subtitle}
           </p>
           <nav

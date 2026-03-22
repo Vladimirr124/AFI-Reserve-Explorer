@@ -8,6 +8,26 @@ import { CORE_PROTOCOL_INVARIANTS_BY_VAULT } from "@/data/afi";
 
 import { useVault } from "./vault-context";
 
+function ExpressionWithLogicEmphasis({ text }: { text: string }) {
+  const parts = text.split(/(≤|≥|==|≠)/g);
+  return (
+    <>
+      {parts.map((part, i) =>
+        part === "≤" || part === "≥" || part === "==" || part === "≠" ? (
+          <span
+            key={`${part}-${i}`}
+            className="text-sm font-bold tracking-tight sm:text-base"
+          >
+            {part}
+          </span>
+        ) : (
+          <span key={`t-${i}`}>{part}</span>
+        ),
+      )}
+    </>
+  );
+}
+
 export function CoreProtocolInvariants() {
   const { vaultType } = useVault();
   const items = CORE_PROTOCOL_INVARIANTS_BY_VAULT[vaultType];
@@ -37,7 +57,7 @@ export function CoreProtocolInvariants() {
           {items.map((item) => (
             <Card
               key={item.id}
-              className="flex flex-col border-border bg-card/95 shadow-sm ring-1 ring-foreground/5"
+              className="flex flex-col border border-l-4 border-border border-l-blue-600 bg-blue-50/30 shadow-sm ring-1 ring-foreground/5 dark:border-l-blue-500 dark:bg-blue-950/25"
             >
               <CardHeader className="space-y-3 pb-2">
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-2">
@@ -58,7 +78,7 @@ export function CoreProtocolInvariants() {
               </CardHeader>
               <CardContent className="flex flex-1 flex-col pt-0">
                 <p className="font-mono text-xs font-semibold leading-relaxed text-foreground">
-                  {item.expression}
+                  <ExpressionWithLogicEmphasis text={item.expression} />
                 </p>
                 {item.note ? (
                   <p className="mt-3 text-xs leading-relaxed text-muted-foreground">

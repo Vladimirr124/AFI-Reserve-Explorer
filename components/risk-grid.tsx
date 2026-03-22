@@ -23,6 +23,27 @@ import {
 
 import { useVault } from "./vault-context";
 
+const CATEGORY_HEADER: Record<
+  string,
+  { label: string; badgeClass: string }
+> = {
+  protocol: {
+    label: "Smart Contract",
+    badgeClass:
+      "border-violet-600/55 bg-violet-50 text-violet-950 dark:border-violet-400/45 dark:bg-violet-950/50 dark:text-violet-100",
+  },
+  market: {
+    label: "Market",
+    badgeClass:
+      "border-amber-600/55 bg-amber-50 text-amber-950 dark:border-amber-400/45 dark:bg-amber-950/45 dark:text-amber-50",
+  },
+  counterparty: {
+    label: "Counterparty",
+    badgeClass:
+      "border-sky-600/55 bg-sky-50 text-sky-950 dark:border-sky-400/45 dark:bg-sky-950/45 dark:text-sky-50",
+  },
+};
+
 export function RiskGrid() {
   const { vaultType } = useVault();
   const risks = RISK_ITEMS_BY_VAULT[vaultType];
@@ -51,6 +72,13 @@ export function RiskGrid() {
               className="border-border/80 bg-card/90 shadow-sm ring-1 ring-foreground/5"
             >
               <CardHeader>
+                <div className="mb-2">
+                  <span
+                    className={`inline-flex rounded-md border px-2 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider ${CATEGORY_HEADER[r.id]?.badgeClass ?? "border-border bg-muted/40 text-foreground"}`}
+                  >
+                    {CATEGORY_HEADER[r.id]?.label ?? r.id}
+                  </span>
+                </div>
                 <div className="flex items-start justify-between gap-2">
                   <CardTitle className="text-base">{r.title}</CardTitle>
                   <Badge variant="secondary" className="shrink-0 font-normal">
